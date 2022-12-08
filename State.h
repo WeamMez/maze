@@ -40,23 +40,14 @@ public:
     void set_color(int row, int col, int color) { maze[row * MSZ + col] = color; }
     Cell *get_cell(int row, int col, bool is_source) { return (is_source ? cell_maze_source : cell_maze_target)[row][col]; }
     void set_cell(int row, int col, bool is_source, Cell *cell) { (is_source ? cell_maze_source : cell_maze_target)[row][col] = cell; }
-    Cell *pop_search_vec(bool is_source)
-    {
-        vector<Cell *> *this_vec = &(is_source ? search_vec_source : search_vec_target);
-        vector<Cell *>::iterator it = this_vec->begin();
-        Cell *ans = *it;
-        this_vec->erase(it);
-        return ans;
-    }
+    Cell *pop_search_vec(bool is_source);
     void add_to_search_vec(bool is_source, Cell *c) { (is_source ? search_vec_source : search_vec_target).push_back(c); }
     bool is_empty(bool is_source) { return (is_source ? search_vec_source : search_vec_target).empty(); }
 
-    int *get_maze() {return maze;}
+    int *get_maze() { return maze; }
 
-    State()
-    {
-        InitMaze();
-    }
+    State() { InitMaze(); }
+    ~State();
 };
 
 #endif //__STATE_H

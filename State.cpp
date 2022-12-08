@@ -5,16 +5,16 @@ void State::InitMaze()
 	// Allocating on the heap in case the stack is too small.
 	maze = new int[MSZ * MSZ];
 
-	cell_maze_source = new Cell**[MSZ];
-	cell_maze_target = new Cell**[MSZ];
+	cell_maze_source = new Cell **[MSZ];
+	cell_maze_target = new Cell **[MSZ];
 
 	// Allocate and nullify all cells
 	int i, j;
 	for (i = 0; i < MSZ; i++)
 	{
-		cell_maze_source[i] = new Cell*[MSZ];
+		cell_maze_source[i] = new Cell *[MSZ];
 		fill_n(cell_maze_source[i], MSZ, nullptr);
-		cell_maze_target[i] = new Cell*[MSZ];
+		cell_maze_target[i] = new Cell *[MSZ];
 		fill_n(cell_maze_target[i], MSZ, nullptr);
 	}
 
@@ -22,9 +22,9 @@ void State::InitMaze()
 	for (i = 0; i < MSZ; i++)
 	{
 		set_color(0, i, WALL);
-        set_color(MSZ - 1, i, WALL);
-        set_color(i, 0, WALL);
-        set_color(i, MSZ - 1, WALL);
+		set_color(MSZ - 1, i, WALL);
+		set_color(i, 0, WALL);
+		set_color(i, MSZ - 1, WALL);
 	}
 	for (i = 1; i < MSZ - 1; i++)
 		for (j = 1; j < MSZ - 1; j++)
@@ -32,9 +32,9 @@ void State::InitMaze()
 			if (i % 2 == 0) // mostly SPACES
 			{
 				if (rand() % PERCENT < SPACE_PERCENT)
-                    set_color(i, j, SPACE);
+					set_color(i, j, SPACE);
 				else
-                    set_color(i, j, WALL);
+					set_color(i, j, WALL);
 			}
 			else //  mostly walls
 			{
@@ -54,4 +54,25 @@ void State::InitMaze()
 	set_color(target_row, target_col, TARGET);
 	Cell *target_pc = new Cell(target_row, target_col, nullptr);
 	search_vec_target.push_back(target_pc);
+}
+
+Cell *State::pop_search_vec(bool is_source)
+{
+	vector<Cell *> *this_vec = &(is_source ? search_vec_source : search_vec_target);
+	vector<Cell *>::iterator it = this_vec->begin();
+	Cell *ans = *it;
+	this_vec->erase(it);
+	return ans;
+}
+
+State::~State()
+{
+	delete (maze);
+	for (int i = 0; i < MSZ; i++)
+	{
+		delete (cell_maze_source[i]);
+		delete (cell_maze_target[i]);
+	}
+	delete (cell_maze_source);
+	delete (cell_maze_target);
 }
